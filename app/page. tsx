@@ -1,0 +1,181 @@
+"use client"
+
+import React, { useState, useEffect } from 'react'
+import { ShoppingCart, CheckCircle, Star, ArrowRight, Smartphone, ShieldCheck, MessageCircle } from 'lucide-react'
+
+// --- COMPOSANTS UI ---
+
+const Button = ({ children, onClick, className = "", variant = "primary" }: any) => {
+  const baseStyles = "px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 w-full md:w-auto"
+  const variants: any = {
+    primary: "bg-[#e87ba0] text-white hover:bg-[#d46a8e] shadow-lg",
+    whatsapp: "bg-[#25D366] text-white hover:bg-[#1ebd5b] shadow-lg",
+  }
+  return (
+    <button onClick={onClick} className={`${baseStyles} ${variants[variant]} ${className}`}>
+      {children}
+    </button>
+  )
+}
+
+export default function SupaMarketShop() {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [quantity, setQuantity] = useState(1)
+  const [formData, setFormData] = useState({
+    nom: '',
+    prenom: '',
+    telephone: '',
+    ville: '',
+    quartier: ''
+  })
+
+  const unitPrice = 5000
+  const totalPrice = unitPrice * quantity
+
+  const handleInputChange = (e: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const sendWhatsApp = () => {
+    const message = `*NOUVELLE COMMANDE - SUPA MARKET*%0A%0A` +
+      `*Produit:* Masque Collagène Night%0A` +
+      `*Quantité:* ${quantity}%0A` +
+      `*Prix Total:* ${totalPrice.toLocaleString()} FCFA%0A%0A` +
+      `*CLIENT:*%0A` +
+      `• Nom/Prénom: ${formData.nom} ${formData.prenom}%0A` +
+      `• Tél: ${formData.telephone}%0A` +
+      `• Adresse: ${formData.ville}, ${formData.quartier}%0A%0A` +
+      `📲 Appuyez sur 'Envoyer' pour confirmer votre commande.%0A` +
+      `✅ Paiement à la livraison. Merci !`
+
+    const isMobile = /iPhone|Android/i.test(navigator.userAgent)
+    const baseUrl = isMobile ? "https://api.whatsapp.com/send" : "https://web.whatsapp.com/send"
+    window.open(`${baseUrl}?phone=2290158704571&text=${message}`, '_blank')
+  }
+
+  return (
+    <div className="min-h-screen bg-[#1a2332] text-white font-sans overflow-x-hidden">
+      
+      {/* BANDE ANIMÉE */}
+      <div className="bg-gradient-to-r from-[#e87ba0] to-[#b04a6d] py-2 overflow-hidden whitespace-nowrap">
+        <div className="animate-marquee inline-block">
+          {[...Array(10)].map((_, i) => (
+            <span key={i} className="mx-4 font-bold uppercase tracking-widest text-sm text-white">
+              🚀 Paiement à la livraison 100% gratuit — 
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* HEADER / LOGO */}
+      <header className="p-6 flex justify-center bg-[#1a2332]/80 backdrop-blur-md sticky top-0 z-40">
+        <div className="flex items-center gap-2">
+          <div className="bg-[#25D366] p-2 rounded-lg"><ShoppingCart size={24} className="text-white"/></div>
+          <span className="text-2xl font-black tracking-tighter text-[#25D366]">SUPA <span className="text-[#e87ba0]">MARKET</span></span>
+        </div>
+      </header>
+
+      {/* HERO SECTION */}
+      <section className="container mx-auto px-6 py-12 flex flex-col md:flex-row items-center gap-12">
+        <div className="flex-1 space-y-6">
+          <h1 className="text-4xl md:text-6xl font-black leading-tight">Votre peau est <span className="text-[#e87ba0]">abîmée ?</span></h1>
+          <p className="text-xl text-gray-300">Le temps d'une vraie réparation. Ce masque au collagène apaise et régénère la peau en profondeur.</p>
+          <Button onClick={() => setIsModalOpen(true)}>COMMANDER MAINTENANT <ArrowRight size={20}/></Button>
+          <div className="flex items-center gap-2 text-[#e87ba0]">
+            <Star size={20} fill="#e87ba0"/> <Star size={20} fill="#e87ba0"/> <Star size={20} fill="#e87ba0"/> <Star size={20} fill="#e87ba0"/> <Star size={20} fill="#e87ba0"/>
+            <span className="text-white font-medium">4.8/5 (Basé sur 120 avis)</span>
+          </div>
+        </div>
+        <div className="flex-1 relative">
+          <div className="rounded-3xl overflow-hidden border-4 border-[#e87ba0] shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80" alt="Avant Après" className="w-full" />
+          </div>
+          <div className="absolute -bottom-6 -left-6 bg-[#25D366] p-4 rounded-xl shadow-xl font-bold text-sm">
+            ✨ Glass Skin Effect
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION BÉNÉFICES */}
+      <section className="bg-[#151b26] py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">Bienfaits que ta peau va adorer</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[
+              "Lisse les rides et lignes fines",
+              "Élimine les imperfections",
+              "Effet illuminant glass skin",
+              "Hydratation jusqu'à +87%",
+              "Tonifie et décongestionne",
+              "Atténue taches et cicatrices"
+            ].map((text, i) => (
+              <div key={i} className="flex items-center gap-4 bg-[#1a2332] p-4 rounded-2xl border border-gray-700">
+                <CheckCircle className="text-[#25D366]" size={28}/>
+                <span className="font-medium">{text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FORMULAIRE MODAL */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#1a2332] w-full max-w-md rounded-3xl p-8 border border-[#e87ba0] relative">
+            <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white">✕</button>
+            <h3 className="text-2xl font-bold mb-6 text-[#e87ba0]">Finaliser ma commande</h3>
+            
+            <div className="space-y-4">
+              <input type="text" name="nom" placeholder="Nom" onChange={handleInputChange} className="w-full p-4 bg-[#151b26] rounded-xl border border-gray-700 outline-none focus:border-[#e87ba0]" />
+              <input type="text" name="prenom" placeholder="Prénom" onChange={handleInputChange} className="w-full p-4 bg-[#151b26] rounded-xl border border-gray-700 outline-none focus:border-[#e87ba0]" />
+              <input type="tel" name="telephone" placeholder="Numéro de téléphone" onChange={handleInputChange} className="w-full p-4 bg-[#151b26] rounded-xl border border-gray-700 outline-none focus:border-[#e87ba0]" />
+              <div className="grid grid-cols-2 gap-4">
+                <input type="text" name="ville" placeholder="Ville" onChange={handleInputChange} className="p-4 bg-[#151b26] rounded-xl border border-gray-700 outline-none focus:border-[#e87ba0]" />
+                <input type="text" name="quartier" placeholder="Quartier" onChange={handleInputChange} className="p-4 bg-[#151b26] rounded-xl border border-gray-700 outline-none focus:border-[#e87ba0]" />
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-[#151b26] rounded-xl">
+                <span>Quantité:</span>
+                <div className="flex items-center gap-4">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-8 h-8 rounded-full bg-gray-700">-</button>
+                  <span className="font-bold text-xl">{quantity}</span>
+                  <button onClick={() => setQuantity(quantity + 1)} className="w-8 h-8 rounded-full bg-gray-700">+</button>
+                </div>
+              </div>
+
+              <div className="text-2xl font-bold text-center py-4 text-[#25D366]">
+                Total: {totalPrice.toLocaleString()} FCFA
+              </div>
+
+              <Button variant="whatsapp" onClick={sendWhatsApp}>
+                <MessageCircle size={24}/> Commander via WhatsApp
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FOOTER */}
+      <footer className="py-12 px-6 border-t border-gray-800 text-center text-gray-500">
+        <div className="flex justify-center gap-6 mb-4">
+          <a href="#" className="hover:text-[#e87ba0]">Mentions Légales</a>
+          <a href="#" className="hover:text-[#e87ba0]">Contact</a>
+        </div>
+        <p>© 2025 Supa Market. Tous droits réservés.</p>
+        <p className="mt-2 text-xs">Disponible au Bénin 🇧🇯</p>
+      </footer>
+
+      {/* CSS POUR L'ANIMATION */}
+      <style jsx>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          display: inline-block;
+          animation: marquee 20s linear infinite;
+        }
+      `}</style>
+    </div>
+  )
+}
